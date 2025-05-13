@@ -1,14 +1,14 @@
-const Project = require('../models/Project');
-const User = require('../models/User');
-const { validateProject, validateProjectUpdate } = require('../utils/validators');
-const { errorHandler } = require('../utils/errorHandler');
-const logger = require('../config/winston');
+import Project from '../models/Project';
+import User from '../models/User';
+import { validateProject, validateProjectUpdate } from '../utils/validators';
+import { errorHandler } from '../utils/errorHandler';
+import logger from '../config/winston';
 
 /**
  * Create a new project
  * @route POST /api/v1/projects
  */
-exports.createProject = async (req, res) => {
+export const createProject = async (req, res) => {
   try {
     // Validate request body
     const { error } = validateProject(req.body);
@@ -70,7 +70,7 @@ exports.createProject = async (req, res) => {
  * Get all projects with optional filtering
  * @route GET /api/v1/projects
  */
-exports.getProjects = async (req, res) => {
+export const getProjects = async (req, res) => {
   try {
     const {
       stack,
@@ -131,7 +131,7 @@ exports.getProjects = async (req, res) => {
  * Get project by ID
  * @route GET /api/v1/projects/:id
  */
-exports.getProjectById = async (req, res) => {
+export const getProjectById = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
       .populate('creatorId', 'name profileImage email')
@@ -159,7 +159,7 @@ exports.getProjectById = async (req, res) => {
  * Update project
  * @route PUT /api/v1/projects/:id
  */
-exports.updateProject = async (req, res) => {
+export const updateProject = async (req, res) => {
   try {
     // Validate request body
     const { error } = validateProjectUpdate(req.body);
@@ -193,7 +193,7 @@ exports.updateProject = async (req, res) => {
       tags
     } = req.body;
 
-    // Create update object
+    // Create update object with shorthand property names
     const updateData = {};
     if (title) updateData.title = title;
     if (description) updateData.description = description;
@@ -233,7 +233,7 @@ exports.updateProject = async (req, res) => {
  * Delete project
  * @route DELETE /api/v1/projects/:id
  */
-exports.deleteProject = async (req, res) => {
+export const deleteProject = async (req, res) => {
   try {
     // Find project
     const project = await Project.findById(req.params.id);
@@ -250,8 +250,8 @@ exports.deleteProject = async (req, res) => {
       });
     }
 
-    // Delete project
-    await project.remove();
+    // Delete project - using modern method instead of remove()
+    await Project.deleteOne({ _id: req.params.id });
 
     logger.info(`Project deleted: ${req.params.id} by user ${req.user.id}`);
 

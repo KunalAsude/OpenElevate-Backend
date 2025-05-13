@@ -47,14 +47,37 @@ app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
-// Middleware to handle duplicate API prefixes
+// Middleware to normalize API paths and handle duplicate prefixes
 app.use((req, res, next) => {
-  // Check if the URL has a duplicated api/v1 prefix
-  if (req.url.includes('/api/v1/api/v1/')) {
-    // Fix the URL by removing one instance of the prefix
-    req.url = req.url.replace('/api/v1/api/v1/', '/api/v1/');
-    logger.info(`Fixed duplicated API prefix: ${req.url}`);
+  // Log the original request URL for debugging
+  logger.debug(`Original request URL: ${req.url}`);
+  
+  // Store the original URL for comparison
+  const originalUrl = req.url;
+  
+  // Normalize the URL by repeatedly replacing duplicated prefixes
+  while (req.url.match(/\/api\/v1(\/api\/v1)+/)) {
+    req.url = req.url.replace(/\/api\/v1(\/api\/v1)+/, '/api/v1');
   }
+  
+  // Replace more specific occurrences
+  if (req.url.includes('/api.v1/api/v1/')) {
+    req.url = req.url.replace('/api.v1/api/v1/', '/api/v1/');
+  }
+  
+  if (req.url.includes('/api/v1/api.v1/')) {
+    req.url = req.url.replace('/api/v1/api.v1/', '/api/v1/');
+  }
+  
+  // Log if the URL was changed
+  if (req.url !== originalUrl) {
+    logger.info(`Fixed API path: ${originalUrl} → ${req.url}`);
+    // Log additional information to help debug the source
+    logger.debug(`Request origin: ${req.headers.origin || 'Unknown'}`);
+    logger.debug(`Referrer: ${req.headers.referer || 'Unknown'}`);
+    logger.debug(`User-Agent: ${req.headers['user-agent'] || 'Unknown'}`);
+  }
+  
   next();
 });
 
@@ -73,6 +96,20 @@ const swaggerOptions = {
         description: 'Development server',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
+    ]
   },
   apis: ['./routes/*.js'], // Path to the API routes folder
 };

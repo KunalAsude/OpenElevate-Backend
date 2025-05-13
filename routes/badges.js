@@ -10,7 +10,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/badges:
+ * /badges:
  *   get:
  *     summary: Get all badges
  *     tags: [Badges]
@@ -50,7 +50,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/badges/{id}:
+ * /badges/{id}:
  *   get:
  *     summary: Get a single badge by ID
  *     tags: [Badges]
@@ -87,7 +87,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/badges:
+ * /badges:
  *   post:
  *     summary: Create a new badge
  *     tags: [Badges]
@@ -169,7 +169,7 @@ router.post('/', authMiddleware, authorize('admin'), [
 
 /**
  * @swagger
- * /api/v1/badges/{id}:
+ * /badges/{id}:
  *   put:
  *     summary: Update a badge
  *     tags: [Badges]
@@ -257,7 +257,7 @@ router.put('/:id', authMiddleware, authorize('admin'), [
 
 /**
  * @swagger
- * /api/v1/badges/{id}:
+ * /badges/{id}:
  *   delete:
  *     summary: Delete a badge
  *     tags: [Badges]
@@ -309,7 +309,7 @@ router.delete('/:id', authMiddleware, authorize('admin'), asyncHandler(async (re
 
 /**
  * @swagger
- * /api/v1/badges/create-default:
+ * /badges/create-default:
  *   post:
  *     summary: Create default system badges
  *     tags: [Badges]
@@ -336,7 +336,7 @@ router.post('/create-default', authMiddleware, authorize('admin'), asyncHandler(
 
 /**
  * @swagger
- * /api/v1/badges/user/{userId}:
+ * /badges/user/{userId}:
  *   get:
  *     summary: Get all badges for a specific user
  *     tags: [Badges]
@@ -374,7 +374,7 @@ router.get('/user/:userId', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/badges/award/{userId}:
+ * /badges/award/{userId}:
  *   post:
  *     summary: Award a badge to a user
  *     tags: [Badges]

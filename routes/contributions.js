@@ -14,7 +14,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/contributions:
+ * /contributions:
  *   post:
  *     summary: Create a new contribution
  *     tags: [Contributions]
@@ -130,7 +130,7 @@ router.post('/', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/contributions:
+ * /contributions:
  *   get:
  *     summary: Get all contributions (with filters)
  *     tags: [Contributions]
@@ -222,7 +222,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/contributions/{id}:
+ * /contributions/{id}:
  *   get:
  *     summary: Get a single contribution by ID
  *     tags: [Contributions]
@@ -262,7 +262,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/contributions/{id}:
+ * /contributions/{id}:
  *   put:
  *     summary: Update a contribution
  *     tags: [Contributions]
@@ -352,7 +352,7 @@ router.put('/:id', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/contributions/{id}/verify:
+ * /contributions/{id}/verify:
  *   put:
  *     summary: Verify a contribution (change status)
  *     tags: [Contributions]
@@ -512,7 +512,7 @@ router.put('/:id/verify', authMiddleware, authorize('admin', 'mentor'), [
 
 /**
  * @swagger
- * /api/v1/contributions/{id}:
+ * /contributions/{id}:
  *   delete:
  *     summary: Delete a contribution
  *     tags: [Contributions]
@@ -571,7 +571,7 @@ router.delete('/:id', authMiddleware, asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/contributions/user/{userId}:
+ * /contributions/user/{userId}:
  *   get:
  *     summary: Get all contributions by a specific user
  *     tags: [Contributions]
@@ -652,7 +652,7 @@ router.get('/user/:userId', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/contributions/project/{projectId}:
+ * /contributions/project/{projectId}:
  *   get:
  *     summary: Get all contributions for a specific project
  *     tags: [Contributions]

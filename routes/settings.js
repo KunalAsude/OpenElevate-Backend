@@ -138,7 +138,7 @@ initializeDefaultSettings();
 
 /**
  * @swagger
- * /api/v1/settings:
+ * /settings:
  *   get:
  *     summary: Get all public settings or all settings for admin
  *     tags: [Settings]
@@ -182,7 +182,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/settings/{key}:
+ * /settings/{key}:
  *   get:
  *     summary: Get a specific setting by key
  *     tags: [Settings]
@@ -230,7 +230,7 @@ router.get('/:key', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/settings:
+ * /settings:
  *   post:
  *     summary: Create a new setting
  *     tags: [Settings]
@@ -313,7 +313,7 @@ router.post('/', authMiddleware, authorize('admin'), [
 
 /**
  * @swagger
- * /api/v1/settings/{key}:
+ * /settings/{key}:
  *   put:
  *     summary: Update a setting
  *     tags: [Settings]
@@ -399,7 +399,7 @@ router.put('/:key', authMiddleware, authorize('admin'), [
 
 /**
  * @swagger
- * /api/v1/settings/{key}:
+ * /settings/{key}:
  *   delete:
  *     summary: Delete a setting
  *     tags: [Settings]
@@ -444,7 +444,7 @@ router.delete('/:key', authMiddleware, authorize('admin'), asyncHandler(async (r
 
 /**
  * @swagger
- * /api/v1/settings/bulk/update:
+ * /settings/bulk/update:
  *   put:
  *     summary: Update multiple settings at once
  *     tags: [Settings]
@@ -537,7 +537,7 @@ router.put('/bulk/update', authMiddleware, authorize('admin'), [
 
 /**
  * @swagger
- * /api/v1/settings/restore/defaults:
+ * /settings/restore/defaults:
  *   post:
  *     summary: Restore default settings
  *     tags: [Settings]

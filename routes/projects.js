@@ -255,7 +255,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/projects/{id}:
+ * /projects/{id}:
  *   get:
  *     summary: Get a single project by ID
  *     tags: [Projects]
@@ -299,7 +299,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/projects/{id}:
+ * /projects/{id}:
  *   put:
  *     summary: Update a project
  *     tags: [Projects]
@@ -409,7 +409,7 @@ router.put('/:id', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/projects/{id}:
+ * /projects/{id}:
  *   delete:
  *     summary: Delete a project
  *     tags: [Projects]
@@ -463,7 +463,7 @@ router.delete('/:id', authMiddleware, asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/projects/{id}/star:
+ * /projects/{id}/star:
  *   post:
  *     summary: Star or unstar a project
  *     tags: [Projects]
@@ -527,7 +527,7 @@ router.post('/:id/star', authMiddleware, asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/projects/{id}/featured-issues:
+ * /projects/{id}/featured-issues:
  *   post:
  *     summary: Add a featured issue to a project
  *     tags: [Projects]
@@ -620,7 +620,7 @@ router.post('/:id/featured-issues', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/projects/{id}/featured-issues/{issueId}:
+ * /projects/{id}/featured-issues/{issueId}:
  *   delete:
  *     summary: Remove a featured issue from a project
  *     tags: [Projects]
@@ -690,7 +690,7 @@ router.delete('/:id/featured-issues/:issueId', authMiddleware, asyncHandler(asyn
 
 /**
  * @swagger
- * /api/v1/projects/tech-stack:
+ * /projects/tech-stack:
  *   get:
  *     summary: Get all unique technologies used across projects
  *     tags: [Projects]

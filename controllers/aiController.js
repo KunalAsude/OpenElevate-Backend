@@ -4,10 +4,11 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import User from '../models/User.js';
 import Project from '../models/Project.js';
+import config from '../config/index.js';
 
 /**
  * @desc    Generate project recommendations based on user skills
- * @route   GET /api/v1/ai/recommendations
+ * @route   GET /ai/recommendations
  * @access  Private
  */
 export const getProjectRecommendations = asyncHandler(async (req, res) => {

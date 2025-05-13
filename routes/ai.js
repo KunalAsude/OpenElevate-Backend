@@ -8,7 +8,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/ai/project-recommendations:
+ * /ai/project-recommendations:
  *   post:
  *     summary: Get personalized project recommendations based on user skills
  *     tags: [AI]
@@ -79,7 +79,7 @@ router.post('/project-recommendations',
 
 /**
  * @swagger
- * /api/v1/ai/code-analysis:
+ * /ai/code-analysis:
  *   post:
  *     summary: Analyze code snippet and provide improvement suggestions
  *     tags: [AI]
@@ -150,7 +150,7 @@ router.post('/code-analysis',
 
 /**
  * @swagger
- * /api/v1/ai/learning-path:
+ * /ai/learning-path:
  *   post:
  *     summary: Generate personalized learning path for a technology or skill
  *     tags: [AI]

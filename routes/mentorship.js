@@ -57,7 +57,7 @@ const Mentorship = mongoose.models.Mentorship || mongoose.model('Mentorship', Me
 
 /**
  * @swagger
- * /api/v1/mentorship:
+ * /mentorship:
  *   post:
  *     summary: Request mentorship from a mentor
  *     tags: [Mentorship]
@@ -164,7 +164,7 @@ router.post('/', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/mentorship:
+ * /mentorship:
  *   get:
  *     summary: Get all mentorships for current user
  *     tags: [Mentorship]
@@ -223,7 +223,7 @@ router.get('/', authMiddleware, asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/mentorship/{id}:
+ * /mentorship/{id}:
  *   get:
  *     summary: Get a single mentorship by ID
  *     tags: [Mentorship]
@@ -276,7 +276,7 @@ router.get('/:id', authMiddleware, asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/mentorship/{id}/respond:
+ * /mentorship/{id}/respond:
  *   put:
  *     summary: Respond to a mentorship request (accept or reject)
  *     tags: [Mentorship]
@@ -398,7 +398,7 @@ router.put('/:id/respond', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/mentorship/{id}:
+ * /mentorship/{id}:
  *   put:
  *     summary: Update a mentorship
  *     tags: [Mentorship]
@@ -498,7 +498,7 @@ router.put('/:id', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/mentorship/stats:
+ * /mentorship/stats:
  *   get:
  *     summary: Get mentorship statistics
  *     tags: [Mentorship]
@@ -565,7 +565,7 @@ router.get('/stats', authMiddleware, authorize('admin'), asyncHandler(async (req
 
 /**
  * @swagger
- * /api/v1/mentorship/mentors:
+ * /mentorship/mentors:
  *   get:
  *     summary: Get available mentors
  *     tags: [Mentorship]

@@ -14,7 +14,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/auth/register:
+ * /auth/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Authentication]
@@ -108,7 +108,7 @@ router.post('/register', [
 
 /**
  * @swagger
- * /api/v1/auth/login:
+ * /auth/login:
  *   post:
  *     summary: Log in a user and get an auth token
  *     tags: [Authentication]
@@ -193,7 +193,7 @@ router.post('/login', [
 
 /**
  * @swagger
- * /api/v1/auth/logout:
+ * /auth/logout:
  *   get:
  *     summary: Logout current user (client-side only)
  *     tags: [Authentication]
@@ -212,7 +212,7 @@ router.get('/logout', (req, res) => {
 
 /**
  * @swagger
- * /api/v1/auth/me:
+ * /auth/me:
  *   get:
  *     summary: Get current logged in user's profile
  *     tags: [Authentication]
@@ -241,7 +241,7 @@ router.get('/me', authMiddleware, asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/auth/update-profile:
+ * /auth/update-profile:
  *   put:
  *     summary: Update user profile
  *     tags: [Authentication]
@@ -349,7 +349,7 @@ router.put('/update-profile', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/auth/change-password:
+ * /auth/change-password:
  *   put:
  *     summary: Change user password
  *     tags: [Authentication]
@@ -417,7 +417,7 @@ router.put('/change-password', authMiddleware, [
 
 /**
  * @swagger
- * /api/v1/auth/forgot-password:
+ * /auth/forgot-password:
  *   post:
  *     summary: Request password reset email
  *     tags: [Authentication]
@@ -503,7 +503,7 @@ router.post('/forgot-password', [
 
 /**
  * @swagger
- * /api/v1/auth/reset-password/{token}:
+ * /auth/reset-password/{token}:
  *   put:
  *     summary: Reset password with token
  *     tags: [Authentication]

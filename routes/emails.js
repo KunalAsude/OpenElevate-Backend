@@ -11,7 +11,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/emails/contact:
+ * /emails/contact:
  *   post:
  *     summary: Send a contact email from user
  *     tags: [Emails]
@@ -92,7 +92,7 @@ router.post('/contact', [
 
 /**
  * @swagger
- * /api/v1/emails/newsletter/subscribe:
+ * /emails/newsletter/subscribe:
  *   post:
  *     summary: Subscribe to newsletter
  *     tags: [Emails]
@@ -221,7 +221,7 @@ router.post('/newsletter/subscribe', [
 
 /**
  * @swagger
- * /api/v1/emails/newsletter/unsubscribe:
+ * /emails/newsletter/unsubscribe:
  *   post:
  *     summary: Unsubscribe from newsletter
  *     tags: [Emails]
@@ -299,7 +299,7 @@ router.post('/newsletter/unsubscribe', [
 
 /**
  * @swagger
- * /api/v1/emails/notification:
+ * /emails/notification:
  *   post:
  *     summary: Send a notification email to a user
  *     tags: [Emails]
@@ -376,7 +376,7 @@ router.post('/notification', authMiddleware, authorize('admin'), [
 
 /**
  * @swagger
- * /api/v1/emails/bulk:
+ * /emails/bulk:
  *   post:
  *     summary: Send bulk emails to multiple users
  *     tags: [Emails]

@@ -9,7 +9,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/v1/users:
+ * /users:
  *   get:
  *     summary: Get all users
  *     tags: [Users]
@@ -105,7 +105,7 @@ router.get('/', authMiddleware, asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/users/{id}:
+ * /users/{id}:
  *   get:
  *     summary: Get a single user by ID
  *     tags: [Users]
@@ -149,7 +149,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/users/{id}:
+ * /users/{id}:
  *   put:
  *     summary: Update a user (admin only)
  *     tags: [Users]
@@ -230,7 +230,7 @@ router.put('/:id', authMiddleware, authorize('admin'), [
 
 /**
  * @swagger
- * /api/v1/users/{id}:
+ * /users/{id}:
  *   delete:
  *     summary: Delete a user (admin only)
  *     tags: [Users]
@@ -276,7 +276,7 @@ router.delete('/:id', authMiddleware, authorize('admin'), asyncHandler(async (re
 
 /**
  * @swagger
- * /api/v1/users/mentors:
+ * /users/mentors:
  *   get:
  *     summary: Get all mentors
  *     tags: [Users]
@@ -350,7 +350,7 @@ router.get('/mentors', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/users/skills:
+ * /users/skills:
  *   get:
  *     summary: Get all unique skills across users
  *     tags: [Users]
@@ -376,7 +376,7 @@ router.get('/skills', asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/users/search:
+ * /users/search:
  *   get:
  *     summary: Search users by name or email
  *     tags: [Users]
@@ -423,7 +423,7 @@ router.get('/search', authMiddleware, asyncHandler(async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/users/stats:
+ * /users/stats:
  *   get:
  *     summary: Get user statistics (admin only)
  *     tags: [Users]
