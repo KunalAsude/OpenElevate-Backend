@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 
 /**
  * @desc    Get all badges
- * @route   GET /api/v1/badges
+ * @route   GET /badges
  * @access  Public
  */
 export const getAllBadges = asyncHandler(async (req, res) => {
@@ -40,7 +40,7 @@ export const getBadgeById = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Create a new badge
- * @route   POST /api/v1/badges
+ * @route   POST /badges
  * @access  Admin
  */
 export const createBadge = asyncHandler(async (req, res) => {
@@ -70,7 +70,7 @@ export const createBadge = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Update a badge
- * @route   PUT /api/v1/badges/:id
+ * @route   PUT /badges/:id
  * @access  Admin
  */
 export const updateBadge = asyncHandler(async (req, res) => {
@@ -109,7 +109,7 @@ export const updateBadge = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Delete a badge
- * @route   DELETE /api/v1/badges/:id
+ * @route   DELETE /badges/:id
  * @access  Admin
  */
 export const deleteBadge = asyncHandler(async (req, res) => {
@@ -137,7 +137,7 @@ export const deleteBadge = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Award badge to user
- * @route   POST /api/v1/badges/:id/award/:userId
+ * @route   POST /badges/:id/award/:userId
  * @access  Admin
  */
 export const awardBadgeToUser = asyncHandler(async (req, res) => {
@@ -172,7 +172,7 @@ export const awardBadgeToUser = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get users with a specific badge
- * @route   GET /api/v1/badges/:id/users
+ * @route   GET /badges/:id/users
  * @access  Public
  */
 export const getUsersWithBadge = asyncHandler(async (req, res) => {
@@ -208,7 +208,7 @@ export const getUsersWithBadge = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Check if current user has specific badge
- * @route   GET /api/v1/badges/:id/check
+ * @route   GET /badges/:id/check
  * @access  Private
  */
 export const checkUserBadge = asyncHandler(async (req, res) => {
@@ -228,7 +228,7 @@ export const checkUserBadge = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Remove badge from user
- * @route   DELETE /api/v1/badges/:id/user/:userId
+ * @route   DELETE /badges/:id/user/:userId
  * @access  Admin
  */
 export const removeBadgeFromUser = asyncHandler(async (req, res) => {

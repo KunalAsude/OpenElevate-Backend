@@ -7,7 +7,7 @@ import { logger } from '../utils/logger.js';
 
 /**
  * @desc    Send contact form email
- * @route   POST /api/v1/emails/contact
+ * @route   POST /emails/contact
  * @access  Public
  */
 export const sendContactEmail = asyncHandler(async (req, res) => {
@@ -48,7 +48,7 @@ export const sendContactEmail = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Subscribe to newsletter
- * @route   POST /api/v1/emails/newsletter/subscribe
+ * @route   POST /emails/newsletter/subscribe
  * @access  Public
  */
 export const subscribeToNewsletter = asyncHandler(async (req, res) => {
@@ -143,7 +143,7 @@ export const subscribeToNewsletter = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Unsubscribe from newsletter
- * @route   POST /api/v1/emails/newsletter/unsubscribe
+ * @route   POST /emails/newsletter/unsubscribe
  * @access  Public
  */
 export const unsubscribeFromNewsletter = asyncHandler(async (req, res) => {
@@ -187,7 +187,7 @@ export const unsubscribeFromNewsletter = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Send notification email to a user
- * @route   POST /api/v1/emails/notification
+ * @route   POST /emails/notification
  * @access  Admin
  */
 export const sendNotificationEmail = asyncHandler(async (req, res) => {
@@ -219,7 +219,7 @@ export const sendNotificationEmail = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Send bulk emails to multiple users
- * @route   POST /api/v1/emails/bulk
+ * @route   POST /emails/bulk
  * @access  Admin
  */
 export const sendBulkEmails = asyncHandler(async (req, res) => {

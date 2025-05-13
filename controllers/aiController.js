@@ -78,7 +78,7 @@ export const getProjectRecommendations = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Analyze code for learning opportunities
- * @route   POST /api/v1/ai/analyze-code
+ * @route   POST /ai/analyze-code
  * @access  Private
  */
 export const analyzeCode = asyncHandler(async (req, res) => {
@@ -108,7 +108,7 @@ export const analyzeCode = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Generate learning path for a user
- * @route   POST /api/v1/ai/learning-path
+ * @route   POST /ai/learning-path
  * @access  Private
  */
 export const generateLearningPath = asyncHandler(async (req, res) => {
@@ -149,7 +149,7 @@ export const generateLearningPath = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get skill gap analysis between user and project
- * @route   GET /api/v1/ai/skill-gap/:projectId
+ * @route   GET /ai/skill-gap/:projectId
  * @access  Private
  */
 export const getSkillGapAnalysis = asyncHandler(async (req, res) => {
@@ -216,7 +216,7 @@ export const getSkillGapAnalysis = asyncHandler(async (req, res) => {
 
 /**
  * @desc    AI Chat Assistant
- * @route   POST /api/v1/ai/chat
+ * @route   POST /ai/chat
  * @access  Private
  */
 export const aiChat = asyncHandler(async (req, res) => {
@@ -253,7 +253,7 @@ export const aiChat = asyncHandler(async (req, res) => {
 
 /**
  * @desc    AI Mentorship Suggestions
- * @route   POST /api/v1/ai/mentorship/suggest
+ * @route   POST /ai/mentorship/suggest
  * @access  Private
  */
 export const suggestMentorship = asyncHandler(async (req, res) => {

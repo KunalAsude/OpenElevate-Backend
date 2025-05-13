@@ -57,7 +57,7 @@ try {
 
 /**
  * @desc    Request mentorship from a mentor
- * @route   POST /api/v1/mentorship
+ * @route   POST /mentorship
  * @access  Private
  */
 export const requestMentorship = asyncHandler(async (req, res) => {
@@ -109,7 +109,7 @@ export const requestMentorship = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get all mentorships for current user
- * @route   GET /api/v1/mentorship
+ * @route   GET /mentorship
  * @access  Private
  */
 export const getMentorships = asyncHandler(async (req, res) => {
@@ -146,7 +146,7 @@ export const getMentorships = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get a single mentorship by ID
- * @route   GET /api/v1/mentorship/:id
+ * @route   GET /mentorship/:id
  * @access  Private
  */
 export const getMentorshipById = asyncHandler(async (req, res) => {
@@ -173,7 +173,7 @@ export const getMentorshipById = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Respond to a mentorship request (accept or reject)
- * @route   PUT /api/v1/mentorship/:id/respond
+ * @route   PUT /mentorship/:id/respond
  * @access  Private (Mentor only)
  */
 export const respondToMentorshipRequest = asyncHandler(async (req, res) => {
@@ -245,7 +245,7 @@ export const respondToMentorshipRequest = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Update a mentorship
- * @route   PUT /api/v1/mentorship/:id
+ * @route   PUT /mentorship/:id
  * @access  Private (Mentorship participants only)
  */
 export const updateMentorship = asyncHandler(async (req, res) => {
@@ -289,7 +289,7 @@ export const updateMentorship = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get mentorship statistics
- * @route   GET /api/v1/mentorship/stats
+ * @route   GET /mentorship/stats
  * @access  Admin only
  */
 export const getMentorshipStats = asyncHandler(async (req, res) => {
@@ -345,7 +345,7 @@ export const getMentorshipStats = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get available mentors
- * @route   GET /api/v1/mentorship/mentors
+ * @route   GET /mentorship/mentors
  * @access  Public
  */
 export const getAvailableMentors = asyncHandler(async (req, res) => {

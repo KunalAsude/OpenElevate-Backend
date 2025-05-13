@@ -137,7 +137,7 @@ initializeDefaultSettings();
 
 /**
  * @desc    Get all settings (public for all, all for admin)
- * @route   GET /api/v1/settings
+ * @route   GET /settings
  * @access  Public/Admin
  */
 export const getAllSettings = asyncHandler(async (req, res) => {
@@ -166,7 +166,7 @@ export const getAllSettings = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get a specific setting by key
- * @route   GET /api/v1/settings/:key
+ * @route   GET /settings/:key
  * @access  Public/Admin
  */
 export const getSettingByKey = asyncHandler(async (req, res) => {
@@ -190,7 +190,7 @@ export const getSettingByKey = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Create a new setting
- * @route   POST /api/v1/settings
+ * @route   POST /settings
  * @access  Admin
  */
 export const createSetting = asyncHandler(async (req, res) => {
@@ -223,7 +223,7 @@ export const createSetting = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Update a setting
- * @route   PUT /api/v1/settings/:key
+ * @route   PUT /settings/:key
  * @access  Admin
  */
 export const updateSetting = asyncHandler(async (req, res) => {
@@ -257,7 +257,7 @@ export const updateSetting = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Delete a setting
- * @route   DELETE /api/v1/settings/:key
+ * @route   DELETE /settings/:key
  * @access  Admin
  */
 export const deleteSetting = asyncHandler(async (req, res) => {
@@ -279,7 +279,7 @@ export const deleteSetting = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Update multiple settings at once
- * @route   PUT /api/v1/settings/bulk/update
+ * @route   PUT /settings/bulk/update
  * @access  Admin
  */
 export const updateBulkSettings = asyncHandler(async (req, res) => {
@@ -330,7 +330,7 @@ export const updateBulkSettings = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Restore default settings
- * @route   POST /api/v1/settings/restore/defaults
+ * @route   POST /settings/restore/defaults
  * @access  Admin
  */
 export const restoreDefaultSettings = asyncHandler(async (req, res) => {

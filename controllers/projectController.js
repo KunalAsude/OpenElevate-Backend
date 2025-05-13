@@ -6,7 +6,7 @@ import logger from '../config/winston';
 
 /**
  * Create a new project
- * @route POST /api/v1/projects
+ * @route POST /projects
  */
 export const createProject = async (req, res) => {
   try {
@@ -68,7 +68,7 @@ export const createProject = async (req, res) => {
 
 /**
  * Get all projects with optional filtering
- * @route GET /api/v1/projects
+ * @route GET /projects
  */
 export const getProjects = async (req, res) => {
   try {
@@ -129,7 +129,7 @@ export const getProjects = async (req, res) => {
 
 /**
  * Get project by ID
- * @route GET /api/v1/projects/:id
+ * @route GET /projects/:id
  */
 export const getProjectById = async (req, res) => {
   try {
@@ -157,7 +157,7 @@ export const getProjectById = async (req, res) => {
 
 /**
  * Update project
- * @route PUT /api/v1/projects/:id
+ * @route PUT /projects/:id
  */
 export const updateProject = async (req, res) => {
   try {
@@ -231,7 +231,7 @@ export const updateProject = async (req, res) => {
 
 /**
  * Delete project
- * @route DELETE /api/v1/projects/:id
+ * @route DELETE /projects/:id
  */
 export const deleteProject = async (req, res) => {
   try {

@@ -6,7 +6,7 @@ import { logger } from '../utils/logger.js';
 
 /**
  * @desc    Get all users with optional filtering
- * @route   GET /api/v1/users
+ * @route   GET /users
  * @access  Public
  */
 export const getUsers = asyncHandler(async (req, res) => {
@@ -59,7 +59,7 @@ export const getUsers = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get user by ID
- * @route   GET /api/v1/users/:id
+ * @route   GET /users/:id
  * @access  Public
  */
 export const getUserById = asyncHandler(async (req, res) => {
@@ -83,7 +83,7 @@ export const getUserById = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Update user profile
- * @route   PUT /api/v1/users/:id
+ * @route   PUT /users/:id
  * @access  Private
  */
 export const updateUser = asyncHandler(async (req, res) => {
@@ -139,7 +139,7 @@ export const updateUser = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get user badges
- * @route   GET /api/v1/users/:id/badges
+ * @route   GET /users/:id/badges
  * @access  Public
  */
 export const getUserBadges = asyncHandler(async (req, res) => {
@@ -159,7 +159,7 @@ export const getUserBadges = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get user's position in leaderboard
- * @route   GET /api/v1/users/:id/leaderboard
+ * @route   GET /users/:id/leaderboard
  * @access  Public
  */
 export const getUserLeaderboardPosition = asyncHandler(async (req, res) => {

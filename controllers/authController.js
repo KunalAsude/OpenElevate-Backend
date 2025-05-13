@@ -55,7 +55,7 @@ export const register = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Login user
- * @route   POST /api/v1/auth/login
+ * @route   POST /auth/login
  * @access  Public
  */
 export const login = asyncHandler(async (req, res) => {
@@ -102,7 +102,7 @@ export const login = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get current user profile
- * @route   GET /api/v1/auth/me
+ * @route   GET /auth/me
  * @access  Private
  */
 export const getMe = asyncHandler(async (req, res) => {
@@ -126,7 +126,7 @@ export const getMe = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Logout user (invalidate token)
- * @route   POST /api/v1/auth/logout
+ * @route   POST /auth/logout
  * @access  Private
  */
 export const logout = asyncHandler(async (req, res) => {
@@ -138,7 +138,7 @@ export const logout = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Refresh token
- * @route   POST /api/v1/auth/refresh
+ * @route   POST /auth/refresh
  * @access  Public
  */
 export const refreshToken = asyncHandler(async (req, res) => {

@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
 
 /**
  * @desc    Get all contributions with optional filtering
- * @route   GET /api/v1/contributions
+ * @route   GET /contributions
  * @access  Public
  */
 export const getAllContributions = asyncHandler(async (req, res) => {
@@ -62,7 +62,7 @@ export const getAllContributions = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get contribution by ID
- * @route   GET /api/v1/contributions/:id
+ * @route   GET /contributions/:id
  * @access  Public
  */
 export const getContributionById = asyncHandler(async (req, res) => {
@@ -83,7 +83,7 @@ export const getContributionById = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Create a new contribution
- * @route   POST /api/v1/contributions
+ * @route   POST /contributions
  * @access  Private
  */
 export const createContribution = asyncHandler(async (req, res) => {
@@ -130,7 +130,7 @@ export const createContribution = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Update a contribution
- * @route   PUT /api/v1/contributions/:id
+ * @route   PUT /contributions/:id
  * @access  Private
  */
 export const updateContribution = asyncHandler(async (req, res) => {
@@ -177,7 +177,7 @@ export const updateContribution = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Delete a contribution
- * @route   DELETE /api/v1/contributions/:id
+ * @route   DELETE /contributions/:id
  * @access  Private
  */
 export const deleteContribution = asyncHandler(async (req, res) => {
@@ -212,7 +212,7 @@ export const deleteContribution = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Verify a contribution
- * @route   PUT /api/v1/contributions/:id/verify
+ * @route   PUT /contributions/:id/verify
  * @access  Admin/Mentor
  */
 export const verifyContribution = asyncHandler(async (req, res) => {
@@ -265,7 +265,7 @@ export const verifyContribution = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get contributions by user ID
- * @route   GET /api/v1/contributions/user/:userId
+ * @route   GET /contributions/user/:userId
  * @access  Public
  */
 export const getUserContributions = asyncHandler(async (req, res) => {
@@ -310,7 +310,7 @@ export const getUserContributions = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get contributions by project ID
- * @route   GET /api/v1/contributions/project/:projectId
+ * @route   GET /contributions/project/:projectId
  * @access  Public
  */
 export const getProjectContributions = asyncHandler(async (req, res) => {
@@ -355,7 +355,7 @@ export const getProjectContributions = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Get contribution statistics
- * @route   GET /api/v1/contributions/stats
+ * @route   GET /contributions/stats
  * @access  Public
  */
 export const getContributionStats = asyncHandler(async (req, res) => {
