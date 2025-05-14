@@ -7,10 +7,12 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import passport from 'passport';
 
 import config from './config/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { logger } from './utils/logger.js';
+import passportConfig from './config/passport.js';
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -46,6 +48,9 @@ app.use(compression()); // Compress responses
 app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
+
+// Initialize Passport
+app.use(passport.initialize());
 
 // Middleware to normalize API paths and handle duplicate prefixes
 app.use((req, res, next) => {

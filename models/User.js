@@ -83,7 +83,23 @@ const UserSchema = new mongoose.Schema({
     default: Date.now
   },
   resetPasswordToken: String,
-  resetPasswordExpire: Date
+  resetPasswordExpire: Date,
+  oauth: {
+    google: {
+      id: String,
+      email: String,
+      name: String
+    },
+    github: {
+      id: String,
+      username: String,
+      name: String
+    }
+  },
+  emailVerified: {
+    type: Boolean,
+    default: false
+  }
 }, {
   timestamps: true,
   toJSON: { virtuals: true },

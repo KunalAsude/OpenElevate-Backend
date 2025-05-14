@@ -2,6 +2,7 @@ import express from 'express';
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import passport from 'passport';
 import { authMiddleware } from '../middleware/auth.js';
 import User from '../models/User.js';
 import { sendEmail } from '../utils/email.js';
@@ -579,5 +580,79 @@ router.put('/reset-password/:token', [
     token
   });
 }));
+
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: Authenticate with Google
+ *     tags: [Authentication]
+ *     responses:
+ *       302:
+ *         description: Redirects to Google authentication
+ */
+router.get('/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email']
+  })
+);
+
+/**
+ * @swagger
+ * /auth/google/callback:
+ *   get:
+ *     summary: Google OAuth callback
+ *     tags: [Authentication]
+ *     responses:
+ *       302:
+ *         description: Redirects to frontend with token
+ */
+router.get('/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  (req, res) => {
+    // Generate JWT token
+    const token = req.user.getSignedJwtToken();
+    
+    // Redirect to frontend with token
+    res.redirect(`${config.frontendUrl}/oauth-callback?token=${token}`);
+  }
+);
+
+/**
+ * @swagger
+ * /auth/github:
+ *   get:
+ *     summary: Authenticate with GitHub
+ *     tags: [Authentication]
+ *     responses:
+ *       302:
+ *         description: Redirects to GitHub authentication
+ */
+router.get('/github',
+  passport.authenticate('github', {
+    scope: ['user:email']
+  })
+);
+
+/**
+ * @swagger
+ * /auth/github/callback:
+ *   get:
+ *     summary: GitHub OAuth callback
+ *     tags: [Authentication]
+ *     responses:
+ *       302:
+ *         description: Redirects to frontend with token
+ */
+router.get('/github/callback',
+  passport.authenticate('github', { session: false, failureRedirect: '/login' }),
+  (req, res) => {
+    // Generate JWT token
+    const token = req.user.getSignedJwtToken();
+    
+    // Redirect to frontend with token
+    res.redirect(`${config.frontendUrl}/oauth-callback?token=${token}`);
+  }
+);
 
 export default router;
