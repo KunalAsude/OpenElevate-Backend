@@ -133,8 +133,8 @@ const initializeDefaultSettings = async () => {
   }
 };
 
-// Export the initialization function so it can be called after DB connection is established
-export const initSettings = initializeDefaultSettings;
+// Initialize default settings when the module is loaded
+initializeDefaultSettings();
 
 /**
  * @swagger
