@@ -39,10 +39,27 @@ const io = new Server(httpServer, {
 });
 
 // Middleware
-app.use(helmet()); // Set security headers
+// Configure helmet with adjusted settings to work with CORS
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
+
+// Enhanced CORS configuration
 app.use(cors({
-  origin: [config.frontendUrl, config.productionFrontendUrl],
-  credentials: true
+  origin: function(origin, callback) {
+    const allowedOrigins = [config.frontendUrl, config.productionFrontendUrl, 'https://open-elevate-frontend.vercel.app'];
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      logger.warn(`CORS blocked request from origin: ${origin}`);
+      callback(null, true); // Temporarily allow all origins while debugging
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  credentials: true,
+  maxAge: 86400, // 24 hours
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.use(compression()); // Compress responses
 app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
@@ -144,8 +161,16 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).json({ 
     message: 'Welcome to OpenElevate API', 
-    documentation: '/api-docs' 
+    documentation: '/api-docs',
+    allowedOrigins: [config.frontendUrl, config.productionFrontendUrl, 'https://open-elevate-frontend.vercel.app']
   });
+});
+
+// CORS preflight debugging endpoint
+app.options('*', cors(), (req, res) => {
+  logger.info(`CORS preflight request received: ${req.method} ${req.url}`);
+  logger.info(`Origin: ${req.headers.origin}`);
+  res.status(200).end();
 });
 
 // Socket.io connection handler
