@@ -10,8 +10,13 @@ import { logger } from '../utils/logger.js';
 // JWT Strategy Configuration
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: config.jwtSecret
+  secretOrKey: config.jwtSecret || 'default_jwt_secret_for_development_only'
 };
+
+// Log warning if using default secret
+if (!config.jwtSecret) {
+  logger.warn('Using default JWT secret. This is insecure and should only be used for development.');
+}
 
 // Configure JWT Strategy
 passport.use(new JwtStrategy(jwtOptions, async (jwtPayload, done) => {

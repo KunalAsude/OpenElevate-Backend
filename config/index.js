@@ -9,7 +9,7 @@ const config = {
   serverUrl: process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`,
   mongoURI: process.env.NODE_ENV === 'production' 
     ? process.env.MONGODB_URI_PRODUCTION 
-    : process.env.MONGODB_URI,
+    : (process.env.MONGODB_URI || 'mongodb://localhost:27017/openelevate'),
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '30d',
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
