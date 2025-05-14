@@ -7,7 +7,8 @@ import { logger } from './utils/logger.js';
 connectDB();
 
 // Start server
-const PORT = config.port;
+// Use the PORT environment variable provided by Render, fall back to config.port if not available
+const PORT = process.env.PORT || config.port;
 
 httpServer.listen(PORT, () => {
   logger.info(`Server running in ${config.env} mode on port ${PORT}`);
