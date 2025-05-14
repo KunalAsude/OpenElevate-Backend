@@ -2,9 +2,22 @@ import { httpServer } from './app.js';
 import connectDB from './config/db.js';
 import config from './config/index.js';
 import { logger } from './utils/logger.js';
+import { initSettings } from './routes/settings.js';
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB and initialize settings
+(async () => {
+  try {
+    await connectDB();
+    logger.info('Database connected successfully');
+    
+    // Initialize settings after successful database connection
+    await initSettings();
+    logger.info('Default settings initialized successfully');
+  } catch (error) {
+    logger.error(`Failed to initialize application: ${error.message}`);
+    process.exit(1);
+  }
+})();
 
 // Start server
 const PORT = config.port;
