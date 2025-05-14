@@ -14,6 +14,64 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { logger } from './utils/logger.js';
 import passportConfig from './config/passport.js';
 
+// Patch Express Router to prevent path-to-regexp errors
+const originalRouter = express.Router;
+express.Router = function patchedRouter() {
+  logger.info('Express router patched to prevent path-to-regexp crashes');
+  const router = originalRouter.apply(this, arguments);
+  
+  // Save original route methods
+  const originalMethods = {
+    get: router.get,
+    post: router.post,
+    put: router.put,
+    delete: router.delete,
+    patch: router.patch,
+    all: router.all
+  };
+  
+  // Create safer versions of each method
+  Object.keys(originalMethods).forEach(method => {
+    router[method] = function safePath() {
+      try {
+        // Check for common path errors before passing to the original method
+        const path = arguments[0];
+        
+        // Check for URLs with protocol in the path
+        if (typeof path === 'string') {
+          if (path.includes('http://') || path.includes('https://')) {
+            const cleanPath = path.replace(/^https?:\/\/[^\/]+/, '');
+            logger.error(`Invalid route path contains URL protocol: ${path} -> fixed to ${cleanPath}`);
+            arguments[0] = cleanPath || '/';
+          }
+          
+          // Check for missing parameter names
+          if (path.includes('/:') && path.match(/\/:[^/]+/g)) {
+            const hasEmptyParam = path.match(/\/:[^/]+/g).some(param => param === '/:' || param.includes('/:https') || param.includes('/:http'));
+            if (hasEmptyParam) {
+              logger.error(`Missing parameter name in route: ${path}`);
+              arguments[0] = '/error-invalid-route';
+            }
+          }
+        }
+        
+        return originalMethods[method].apply(this, arguments);
+      } catch (error) {
+        logger.error(`Caught path-to-regexp error: ${error.message}`);
+        // Return a dummy route handler that returns a 500 error
+        return router.use(function(req, res, next) {
+          res.status(500).json({
+            error: 'Server configuration error',
+            message: 'A route was incorrectly configured'
+          });
+        });
+      }
+    };
+  });
+  
+  return router;
+};
+
 // Import routes
 import authRoutes from './routes/auth.js';
 import usersRoutes from './routes/users.js';
@@ -29,123 +87,29 @@ import settingsRoutes from './routes/settings.js';
 const app = express();
 const httpServer = createServer(app);
 
-// CRITICAL: Directly patch Express to prevent path-to-regexp crashes
-// This is a radical solution to prevent the path-to-regexp errors
-try {
-  // Find the Express router module
-  const Router = express.Router;
-  const Layer = Object.getPrototypeOf(Router()).constructor.prototype.constructor;
-  
-  // Store the original path matching function
-  const originalMatch = Layer.prototype.match;
-  
-  // Override with a safe version that catches all errors
-  Layer.prototype.match = function(path) {
-    try {
-      // Quickly check if the path is problematic before even trying to match
-      if (typeof path === 'string' && (
-          path.includes('http') || 
-          path.includes('://') || 
-          path.includes('git.new') || 
-          path.includes('www.'))) {
-        logger.error(`BLOCKED BAD PATH: ${path}`);
-        return false;
-      }
-      
-      // Call the original match function
-      return originalMatch.apply(this, arguments);
-    } catch (error) {
-      // If any error occurs in path matching, log it and fail safely
-      logger.error(`Path matching error: ${error.message}`, { path, error });
-      return false;
-    }
-  };
-  
-  logger.info('Express router patched to prevent path-to-regexp crashes');
-} catch (err) {
-  logger.error('Failed to patch Express router', err);
-}
-
-// Add a process-level exception handler to prevent crashes
-process.on('uncaughtException', (err) => {
-  // Catch path-to-regexp errors specifically
-  if (err.message && err.message.includes('Missing parameter name')) {
-    logger.error('Caught path-to-regexp error:', err);
-    // Don't crash the entire app - just log and continue
-  } else {
-    // For other uncaught errors, log them but still allow normal error handling
-    logger.error('Uncaught exception:', err);
-    // Optionally: process.exit(1) if you want to crash on non-path-to-regexp errors
-  }
-});
-
 // Socket.io setup
 const io = new Server(httpServer, {
   cors: {
-    origin: [config.frontendUrl, config.productionFrontendUrl],
+    origin: '*', // Allow all origins for Socket.io
     methods: ['GET', 'POST'],
     credentials: true
   }
 });
 
-// Add a very early URL sanitization middleware as the FIRST middleware to run
-// This will catch malformed URLs before any other middleware or route handling
-app.use((req, res, next) => {
-  try {
-    // Catch problematic URLs that would trigger path-to-regexp errors
-    const url = req.url.toString();
-    
-    // CRITICAL: Specific check for the exact problematic URL pattern
-    if (url.includes('git.new/pathToRegexpError') || url === 'https://git.new/pathToRegexpError') {
-      logger.error(`BLOCKED KNOWN BAD URL: ${url}`);
-      return res.status(400).send('Bad Request - URL not allowed');
-    }
-    
-    // Extensive safety check for URLs that could break path-to-regexp
-    if (url.includes('http') || 
-        url.includes('://') || 
-        url.includes('git.new') || 
-        url.includes('www.') || 
-        (url.includes(':') && !url.match(/\/:[a-zA-Z0-9_-]+/)) || 
-        url.includes('//')) {
-      logger.error(`BLOCKED INVALID URL: ${url}`);
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid URL format',
-        details: 'The request contains characters or patterns that are not allowed'
-      });
-    }
-  } catch (error) {
-    logger.error('Error in URL sanitization middleware:', error);
-    return res.status(400).send('Bad Request');
-  }
-  
-  next();
-});
-
 // Middleware
-// Configure helmet with adjusted settings to work with CORS
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' }
+  contentSecurityPolicy: false, // Disable CSP for Swagger UI
+  crossOriginEmbedderPolicy: false // Allow embedding
+})); 
+
+// CORS configuration - allow all origins
+app.use(cors({
+  origin: '*', // Allow all origins as requested
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
-// Enhanced CORS configuration
-app.use(cors({
-  origin: function(origin, callback) {
-    const allowedOrigins = [config.frontendUrl, config.productionFrontendUrl, 'https://open-elevate-frontend.vercel.app'];
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      logger.warn(`CORS blocked request from origin: ${origin}`);
-      callback(null, true); // Temporarily allow all origins while debugging
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  credentials: true,
-  maxAge: 86400, // 24 hours
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
 app.use(compression()); // Compress responses
 app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -162,66 +126,28 @@ app.use((req, res, next) => {
   // Store the original URL for comparison
   const originalUrl = req.url;
   
-  // First, safely decode the URL to handle encoded characters
-  try {
-    req.url = decodeURIComponent(req.url);
-  } catch (e) {
-    logger.warn(`Invalid URL encoding: ${req.url}`);
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Invalid URL encoding'
-    });
+  // Normalize the URL by repeatedly replacing duplicated prefixes
+  while (req.url.match(/\/api\/v1(\/api\/v1)+/)) {
+    req.url = req.url.replace(/\/api\/v1(\/api\/v1)+/, '/api/v1');
   }
   
-  // SECURITY: Block problematic URLs that would cause path-to-regexp errors
-  // Extensive pattern matching to catch all problematic URLs
-  if (req.url.match(/^https?:\/\//) || 
-      req.url.includes('://') || 
-      req.url.includes(':') && !req.url.match(/\/:[a-zA-Z0-9_]+/) || // Block colons not in valid parameter format
-      req.url.includes('git.new') || 
-      req.url.includes('http') || 
-      req.url.includes('www.') ||
-      req.url.includes('//')) {
-    logger.warn(`Blocked potential URL injection: ${req.url}`);
-    logger.warn(`Request headers: ${JSON.stringify(req.headers)}`);
-    logger.warn(`Request method: ${req.method}`);
-    logger.warn(`Request IP: ${req.ip}`);
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Invalid request path',
-      details: 'URLs containing protocols or invalid domains are not allowed'
-    });
+  // Replace more specific occurrences
+  if (req.url.includes('/api.v1/api/v1/')) {
+    req.url = req.url.replace('/api.v1/api/v1/', '/api/v1/');
   }
   
-  // Only normalize paths that start with /api/
-  if (req.url.startsWith('/api/')) {
-    // Use a simpler string-based approach to normalize duplicated prefixes
-    // Check for common duplicate patterns without using complex regex
-    if (req.url.includes('/api/v1/api/v1')) {
-      // Handle duplicated prefixes by simple string replacement
-      req.url = '/api/v1' + req.url.substring(req.url.lastIndexOf('/api/v1') + 7);
-    }
-    
-    // Replace more specific occurrences
-    if (req.url.includes('/api.v1/api/v1/')) {
-      req.url = req.url.replace('/api.v1/api/v1/', '/api/v1/');
-    }
-    
-    if (req.url.includes('/api/v1/api.v1/')) {
-      req.url = req.url.replace('/api/v1/api.v1/', '/api/v1/');
-    }
-    
-    // Log if the URL was changed
-    if (req.url !== originalUrl) {
-      logger.info(`Fixed API path: ${originalUrl} → ${req.url}`);
-      // Log additional information to help debug the source
-      logger.debug(`Request origin: ${req.headers.origin || 'Unknown'}`);
-      logger.debug(`Referrer: ${req.headers.referer || 'Unknown'}`);
-      logger.debug(`User-Agent: ${req.headers['user-agent'] || 'Unknown'}`);
-    }
+  if (req.url.includes('/api/v1/api.v1/')) {
+    req.url = req.url.replace('/api/v1/api.v1/', '/api/v1/');
   }
   
-  // URL decoding is now done at the beginning of the middleware
+  // Log if the URL was changed
+  if (req.url !== originalUrl) {
+    logger.info(`Fixed API path: ${originalUrl} → ${req.url}`);
+    // Log additional information to help debug the source
+    logger.debug(`Request origin: ${req.headers.origin || 'Unknown'}`);
+    logger.debug(`Referrer: ${req.headers.referer || 'Unknown'}`);
+    logger.debug(`User-Agent: ${req.headers['user-agent'] || 'Unknown'}`);
+  }
   
   next();
 });
@@ -237,9 +163,13 @@ const swaggerOptions = {
     },
     servers: [
       {
+        url: `/api/v1`,  // Relative URL works better in production
+        description: 'API server',
+      },
+      {
         url: `http://localhost:${config.port}/api/v1`,
         description: 'Development server',
-      },
+      }
     ],
     components: {
       securitySchemes: {
@@ -259,18 +189,78 @@ const swaggerOptions = {
   apis: ['./routes/*.js'], // Path to the API routes folder
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+// Try/catch for Swagger initialization
+let swaggerDocs;
+try {
+  swaggerDocs = swaggerJsDoc(swaggerOptions);
+} catch (error) {
+  logger.error(`Error initializing Swagger: ${error.message}`);
+  // Create a minimal swagger doc
+  swaggerDocs = {
+    openapi: '3.0.0',
+    info: {
+      title: 'OpenElevate API',
+      version: '1.0.0',
+      description: 'Error loading full API docs'
+    },
+    paths: {}
+  };
+}
 
-// API routes
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/users', usersRoutes);
-app.use('/api/v1/projects', projectsRoutes);
-app.use('/api/v1/contributions', contributionsRoutes);
-app.use('/api/v1/badges', badgesRoutes);
-app.use('/api/v1/mentorship', mentorshipRoutes);
-app.use('/api/v1/ai', aiRoutes);
-app.use('/api/v1/emails', emailsRoutes);
-app.use('/api/v1/settings', settingsRoutes);
+// API routes - wrapped in try/catch blocks
+try {
+  app.use('/api/v1/auth', authRoutes);
+} catch (error) {
+  logger.error(`Error registering auth routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/users', usersRoutes);
+} catch (error) {
+  logger.error(`Error registering users routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/projects', projectsRoutes);
+} catch (error) {
+  logger.error(`Error registering projects routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/contributions', contributionsRoutes);
+} catch (error) {
+  logger.error(`Error registering contributions routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/badges', badgesRoutes);
+} catch (error) {
+  logger.error(`Error registering badges routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/mentorship', mentorshipRoutes);
+} catch (error) {
+  logger.error(`Error registering mentorship routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/ai', aiRoutes);
+} catch (error) {
+  logger.error(`Error registering ai routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/emails', emailsRoutes);
+} catch (error) {
+  logger.error(`Error registering emails routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/settings', settingsRoutes);
+} catch (error) {
+  logger.error(`Error registering settings routes: ${error.message}`);
+}
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -284,16 +274,8 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).json({ 
     message: 'Welcome to OpenElevate API', 
-    documentation: '/api-docs',
-    allowedOrigins: [config.frontendUrl, config.productionFrontendUrl]
+    documentation: '/api-docs' 
   });
-});
-
-// CORS preflight debugging endpoint
-app.options('*', cors(), (req, res) => {
-  logger.info(`CORS preflight request received: ${req.method} ${req.url}`);
-  logger.info(`Origin: ${req.headers.origin}`);
-  res.status(200).end();
 });
 
 // Socket.io connection handler
