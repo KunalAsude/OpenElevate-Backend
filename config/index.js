@@ -43,7 +43,8 @@ const config = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET
     }
   },
-  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000'
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+  productionFrontendUrl: process.env.PRODUCTION_FRONTEND_URL || 'http://localhost:3000'
 };
 
 export default config;
