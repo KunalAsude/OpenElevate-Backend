@@ -77,27 +77,37 @@ app.use((req, res, next) => {
   // Store the original URL for comparison
   const originalUrl = req.url;
   
+  // SECURITY: Prevent URLs with protocol from being processed
+  // This prevents path-to-regexp errors with URLs like https://example.com
+  if (req.url.match(/^https?:\/\//)) {
+    logger.warn(`Blocked potential URL injection: ${req.url}`);
+    return res.status(400).json({ success: false, message: 'Invalid request path' });
+  }
+  
   // Normalize the URL by repeatedly replacing duplicated prefixes
-  while (req.url.match(/\/api\/v1(\/api\/v1)+/)) {
-    req.url = req.url.replace(/\/api\/v1(\/api\/v1)+/, '/api/v1');
-  }
-  
-  // Replace more specific occurrences
-  if (req.url.includes('/api.v1/api/v1/')) {
-    req.url = req.url.replace('/api.v1/api/v1/', '/api/v1/');
-  }
-  
-  if (req.url.includes('/api/v1/api.v1/')) {
-    req.url = req.url.replace('/api/v1/api.v1/', '/api/v1/');
-  }
-  
-  // Log if the URL was changed
-  if (req.url !== originalUrl) {
-    logger.info(`Fixed API path: ${originalUrl} → ${req.url}`);
-    // Log additional information to help debug the source
-    logger.debug(`Request origin: ${req.headers.origin || 'Unknown'}`);
-    logger.debug(`Referrer: ${req.headers.referer || 'Unknown'}`);
-    logger.debug(`User-Agent: ${req.headers['user-agent'] || 'Unknown'}`);
+  // Only apply this to paths that actually start with /api/
+  if (req.url.startsWith('/api/')) {
+    while (req.url.match(/\/api\/v1(\/api\/v1)+/)) {
+      req.url = req.url.replace(/\/api\/v1(\/api\/v1)+/, '/api/v1');
+    }
+    
+    // Replace more specific occurrences
+    if (req.url.includes('/api.v1/api/v1/')) {
+      req.url = req.url.replace('/api.v1/api/v1/', '/api/v1/');
+    }
+    
+    if (req.url.includes('/api/v1/api.v1/')) {
+      req.url = req.url.replace('/api/v1/api.v1/', '/api/v1/');
+    }
+    
+    // Log if the URL was changed
+    if (req.url !== originalUrl) {
+      logger.info(`Fixed API path: ${originalUrl} → ${req.url}`);
+      // Log additional information to help debug the source
+      logger.debug(`Request origin: ${req.headers.origin || 'Unknown'}`);
+      logger.debug(`Referrer: ${req.headers.referer || 'Unknown'}`);
+      logger.debug(`User-Agent: ${req.headers['user-agent'] || 'Unknown'}`);
+    }
   }
   
   next();
@@ -162,7 +172,7 @@ app.get('/', (req, res) => {
   res.status(200).json({ 
     message: 'Welcome to OpenElevate API', 
     documentation: '/api-docs',
-    allowedOrigins: [config.frontendUrl, config.productionFrontendUrl, 'https://open-elevate-frontend.vercel.app']
+    allowedOrigins: [config.frontendUrl, config.productionFrontendUrl]
   });
 });
 
