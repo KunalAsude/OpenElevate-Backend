@@ -69,7 +69,7 @@ app.use(morgan('combined', { stream: { write: message => logger.info(message.tri
 // Initialize Passport
 app.use(passport.initialize());
 
-// Middleware to normalize API paths and handle duplicate prefixes
+// Middleware to sanitize URLs before they reach Express router
 app.use((req, res, next) => {
   // Log the original request URL for debugging
   logger.debug(`Original request URL: ${req.url}`);
@@ -77,10 +77,20 @@ app.use((req, res, next) => {
   // Store the original URL for comparison
   const originalUrl = req.url;
   
-  // SECURITY: Reject URLs with protocol or special characters that could cause path-to-regexp issues
-  if (req.url.match(/^https?:\/\//) || req.url.includes(':')) {
-    logger.warn(`Blocked potential URL injection: ${req.url}`);
+  // SECURITY: Block any URLs containing protocols or that could cause path-to-regexp issues
+  if (req.url.match(/^https?:\/\//) || req.url.includes('://')) {
+    logger.warn(`Blocked URL with protocol: ${req.url}`);
     return res.status(400).json({ success: false, message: 'Invalid request path' });
+  }
+  
+  // Specifically handle colon characters which cause issues with path-to-regexp
+  if (req.url.includes(':')) {
+    // Only allow colons that are part of valid parameter syntax (preceded by /)
+    const invalidColon = req.url.match(/[^/]:/);
+    if (invalidColon) {
+      logger.warn(`Blocked URL with invalid colon usage: ${req.url}`);
+      return res.status(400).json({ success: false, message: 'Invalid character in request path' });
+    }
   }
   
   // Only normalize paths that start with /api/
