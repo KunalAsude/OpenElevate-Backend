@@ -77,16 +77,15 @@ app.use((req, res, next) => {
   // Store the original URL for comparison
   const originalUrl = req.url;
   
-  // SECURITY: Prevent URLs with protocol from being processed
-  // This prevents path-to-regexp errors with URLs like https://example.com
-  if (req.url.match(/^https?:\/\//)) {
+  // SECURITY: Reject URLs with protocol or special characters that could cause path-to-regexp issues
+  if (req.url.match(/^https?:\/\//) || req.url.includes(':')) {
     logger.warn(`Blocked potential URL injection: ${req.url}`);
     return res.status(400).json({ success: false, message: 'Invalid request path' });
   }
   
-  // Normalize the URL by repeatedly replacing duplicated prefixes
-  // Only apply this to paths that actually start with /api/
+  // Only normalize paths that start with /api/
   if (req.url.startsWith('/api/')) {
+    // Normalize the URL by repeatedly replacing duplicated prefixes
     while (req.url.match(/\/api\/v1(\/api\/v1)+/)) {
       req.url = req.url.replace(/\/api\/v1(\/api\/v1)+/, '/api/v1');
     }
