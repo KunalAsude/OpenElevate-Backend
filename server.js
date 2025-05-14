@@ -20,7 +20,7 @@ import { initSettings } from './routes/settings.js';
 })();
 
 // Start server
-const PORT = config.port;
+const PORT = process.env.PORT || config.port; // Use environment PORT for Render, fallback to config for local development
 
 httpServer.listen(PORT, () => {
   logger.info(`Server running in ${config.env} mode on port ${PORT}`);
