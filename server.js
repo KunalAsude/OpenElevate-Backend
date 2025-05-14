@@ -20,11 +20,12 @@ import { initSettings } from './routes/settings.js';
 })();
 
 // Start server
-const PORT = process.env.PORT || config.port; // Use environment PORT for Render, fallback to config for local development
+const PORT = process.env.PORT || 5000; // Explicitly use port 5000 as default for Render deployment
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, '0.0.0.0', () => {
   logger.info(`Server running in ${config.env} mode on port ${PORT}`);
   logger.info(`API Documentation available at http://localhost:${PORT}/api-docs`);
+  logger.info(`Server is listening on all network interfaces`);
 });
 
 // Handle unhandled promise rejections
