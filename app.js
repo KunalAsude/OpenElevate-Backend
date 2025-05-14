@@ -32,7 +32,7 @@ const httpServer = createServer(app);
 // Socket.io setup
 const io = new Server(httpServer, {
   cors: {
-    origin: config.frontendUrl,
+    origin: [config.frontendUrl, config.productionFrontendUrl],
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -41,7 +41,7 @@ const io = new Server(httpServer, {
 // Middleware
 app.use(helmet()); // Set security headers
 app.use(cors({
-  origin: config.frontendUrl,
+  origin: [config.frontendUrl, config.productionFrontendUrl],
   credentials: true
 }));
 app.use(compression()); // Compress responses
