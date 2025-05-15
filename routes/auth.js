@@ -628,11 +628,17 @@ router.get('/google/callback',
  *       302:
  *         description: Redirects to GitHub authentication
  */
-router.get('/github',
+router.get('/github', (req, res, next) => {
+  const callbackURL = `${config.serverUrl}/api/v1/auth/github/callback`;
+  
+  // Log for debugging
+  console.log(`GitHub OAuth initiated with callback URL: ${callbackURL}`);
+  
   passport.authenticate('github', {
-    scope: ['user:email']
-  })
-);
+    scope: ['user:email'],
+    callbackURL: callbackURL
+  })(req, res, next);
+});
 
 /**
  * @swagger
@@ -644,15 +650,32 @@ router.get('/github',
  *       302:
  *         description: Redirects to frontend with token
  */
-router.get('/github/callback',
-  passport.authenticate('github', { session: false, failureRedirect: '/login' }),
-  (req, res) => {
+router.get('/github/callback', (req, res, next) => {
+  // Log the callback for debugging
+  console.log('GitHub OAuth callback received:', req.url);
+  
+  const callbackURL = `${config.serverUrl}/api/v1/auth/github/callback`;
+  
+  passport.authenticate('github', { 
+    callbackURL: callbackURL,
+    session: false, 
+    failureRedirect: '/login' 
+  }, (err, user) => {
+    if (err) {
+      console.error('GitHub OAuth error:', err);
+      return res.status(500).json({ success: false, error: 'Authentication failed' });
+    }
+    
+    if (!user) {
+      return res.redirect('/login');
+    }
+    
     // Generate JWT token
-    const token = req.user.getSignedJwtToken();
+    const token = user.getSignedJwtToken();
     
     // Redirect to frontend with token
     res.redirect(`${config.frontendUrl}/oauth-callback?token=${token}`);
-  }
-);
+  })(req, res, next);
+});
 
 export default router;
