@@ -82,6 +82,8 @@ import mentorshipRoutes from './routes/mentorship.js';
 import aiRoutes from './routes/ai.js';
 import emailsRoutes from './routes/emails.js';
 import settingsRoutes from './routes/settings.js';
+import githubRoutes from './routes/github.js';
+import * as scheduledTasks from './utils/scheduledTasks.js';
 
 // Initialize express app
 const app = express();
@@ -262,6 +264,13 @@ try {
   logger.error(`Error registering settings routes: ${error.message}`);
 }
 
+try {
+  app.use('/api/v1/github', githubRoutes);
+  logger.info('GitHub routes registered successfully');
+} catch (error) {
+  logger.error(`Error registering GitHub routes: ${error.message}`);
+}
+
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
@@ -277,6 +286,14 @@ app.get('/', (req, res) => {
     documentation: '/api-docs' 
   });
 });
+
+// Start scheduled tasks
+try {
+  scheduledTasks.startScheduledTasks();
+  logger.info('Scheduled tasks started');
+} catch (error) {
+  logger.error(`Error starting scheduled tasks: ${error.message}`);
+}
 
 // Socket.io connection handler
 io.on('connection', (socket) => {

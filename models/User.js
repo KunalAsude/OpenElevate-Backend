@@ -93,7 +93,11 @@ const UserSchema = new mongoose.Schema({
     github: {
       id: String,
       username: String,
-      name: String
+      name: String,
+      accessToken: String,
+      refreshToken: String,
+      tokenScope: String,
+      tokenExpiry: Date
     }
   },
   emailVerified: {

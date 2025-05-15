@@ -5,7 +5,9 @@ dotenv.config();
 
 const config = {
   env: process.env.NODE_ENV || 'development',
+  // Use port 5000 by default to match GitHub OAuth callback URL
   port: process.env.PORT || 5000,
+  // Make serverUrl consistent with the port number
   serverUrl: process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`,
   mongoURI: process.env.NODE_ENV === 'production' 
     ? process.env.MONGODB_URI_PRODUCTION 
