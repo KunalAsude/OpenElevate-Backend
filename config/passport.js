@@ -99,7 +99,7 @@ passport.use(new GitHubStrategy({
   clientID: githubClientID,
   clientSecret: githubClientSecret,
   // Explicitly hardcode the callback URL to match what's set in GitHub settings
-  callbackURL: `${config.serverUrl}/api/v1/auth/github/callback`,
+  callbackURL: `${config.serverUrl}/api/v1/auth/github/callback`, // Use server URL from config
   scope: ['user', 'repo', 'read:org', 'read:user', 'user:email'],
   // Add proper error handling
   passReqToCallback: true
