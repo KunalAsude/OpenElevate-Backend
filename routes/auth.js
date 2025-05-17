@@ -631,8 +631,11 @@ router.get('/google/callback',
 router.get('/github', (req, res, next) => {
   const callbackURL = `${config.serverUrl}/api/v1/auth/github/callback`;
   
-  // Log for debugging
-  console.log(`GitHub OAuth initiated with callback URL: ${callbackURL}`);
+  // Enhanced logging for debugging
+  console.log('GitHub OAuth Flow Debug Info:');
+  console.log(`- Server URL: ${config.serverUrl}`);
+  console.log(`- Callback URL: ${callbackURL}`);
+  console.log(`- Client ID: ${config.oauth.github.clientID ? 'Set (hidden for security)' : 'MISSING!'}`);
   
   passport.authenticate('github', {
     scope: ['user:email'],

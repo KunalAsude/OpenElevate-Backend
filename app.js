@@ -83,6 +83,7 @@ import aiRoutes from './routes/ai.js';
 import emailsRoutes from './routes/emails.js';
 import settingsRoutes from './routes/settings.js';
 import githubRoutes from './routes/github.js';
+import analyticsRoutes from './routes/analytics.js';
 import * as scheduledTasks from './utils/scheduledTasks.js';
 
 // Initialize express app
@@ -266,9 +267,16 @@ try {
 
 try {
   app.use('/api/v1/github', githubRoutes);
-  logger.info('GitHub routes registered successfully');
+  logger.info('GitHub routes registered');
 } catch (error) {
   logger.error(`Error registering GitHub routes: ${error.message}`);
+}
+
+try {
+  app.use('/api/v1/analytics', analyticsRoutes);
+  logger.info('Analytics routes registered');
+} catch (error) {
+  logger.error(`Error registering analytics routes: ${error.message}`);
 }
 
 // Swagger Documentation
